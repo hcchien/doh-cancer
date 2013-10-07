@@ -1,4 +1,8 @@
+// http://www.plurk.com/p/j2j4a6  # the build with casperjs for file fownload
+// http://hcchien.org/phantomjs.tgz
+
 var casper = require('casper').create();
+var fileURL = '';
 casper.start('https://cris.hpa.gov.tw/pagepub/Home.aspx?itemNo=cr.q.10').thenEvaluate(function() {
 	document.querySelector('input[name="WR1_2$Kind"]').setAttribute('value', 'IN_Kind3');
 	document.querySelector('input[name="WR1_2$cmdEnter"]').click();
@@ -54,7 +58,7 @@ casper.thenEvaluate(function() {
 casper.thenEvaluate(function() {
 	document.querySelector("a[id='WR1_1_ReportViewer1_ctl01_ctl05_ctl01']").click();
 });
-
+casper.page.onFileDownload = function() { return ('foo.xml') };	
 
 
 
