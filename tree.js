@@ -47,6 +47,10 @@ casper.then(function() {
 			"WR1_1_Q_ChartKindII":	'B' 
 		}, true);
 	});
+casper.page.onResourceReceived = function(response) {
+    console.log("I got a response body with size: " + response.bodySize);
+    console.log("I got a response body with buffer: " + typeof response.body);
+};
 casper.thenEvaluate(function() {
 	document.querySelector("input[id='WR1_1_cmdQuery']").click();
 });
