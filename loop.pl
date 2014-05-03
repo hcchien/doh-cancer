@@ -1,9 +1,12 @@
 #!/usr/local/bin/perl
 
+my @type = @ARGV;
 my @data = (1, 2);
 my @point = ('A', 'B', 'C', 'D');
 my @sex = (0, 1, 2, 3);
-my @type = qw/WR1_1$ctl138 WR1_1$ctl143 WR1_1$ctl148 WR1_1$ctl153 WR1_1$ctl158 WR1_1$ctl163 WR1_1$ctl168 WR1_1$ctl173 WR1_1$ctl178 WR1_1$ctl183 WR1_1$ctl188 WR1_1$ctl193 WR1_1$ctl198 WR1_1$ctl203 WR1_1$ctl208 WR1_1$ctl213 WR1_1$ctl218 WR1_1$ctl223 WR1_1$ctl228 WR1_1$ctl233 WR1_1$ctl238/;
+unless (@type) {
+	@type = qw/WR1_1$ctl138 WR1_1$ctl143 WR1_1$ctl148 WR1_1$ctl153 WR1_1$ctl158 WR1_1$ctl163 WR1_1$ctl168 WR1_1$ctl173 WR1_1$ctl178 WR1_1$ctl183 WR1_1$ctl188 WR1_1$ctl193 WR1_1$ctl198 WR1_1$ctl203 WR1_1$ctl208 WR1_1$ctl213 WR1_1$ctl218 WR1_1$ctl223 WR1_1$ctl228 WR1_1$ctl233 WR1_1$ctl238/;
+}
 my @dist;
 push @dist, "WR1_1_ctl10_$_" for (0..28);
 push @dist, "WR1_1_ctl15_$_" for (0..19);
@@ -38,7 +41,7 @@ for my $t (@type) {
 		for my $s (@sex) {
 			for my $d (@data) {
 				for my $di (@dist) {
-					my $cmd = "casperjs --ignore-ssl-errors=true tree.js --kind=$d --point=$p --sex=$s --type='".$t."' --dist=$di &";
+					my $cmd = "casperjs --ignore-ssl-errors=true tree.js --kind=$d --point=$p --sex=$s --type='".$t."' --dist=$di";
 					print "$cmd\n";
 					`$cmd`;
 					sleep 5;
