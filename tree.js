@@ -3,18 +3,22 @@
 
 var casper = require('casper').create();
 var fileURL = '';
+var kind = casper.cli.get('kind') || '1';
+var point = casper.cli.get('point') || 'A';
+var sex = casper.cli.get('sex') || '0';
+var type = casper.cli.get('type') || 'WR1_1$ctl213';
+var dist = casper.cli.get('dist') || 'WR1_1_ctl10_0';
+
 casper.start('https://cris.hpa.gov.tw/pagepub/Home.aspx?itemNo=cr.q.10').thenEvaluate(function() {
 	document.querySelector('input[name="WR1_2$Kind"]').setAttribute('value', 'IN_Kind3');
 	document.querySelector('input[name="WR1_2$cmdEnter"]').click();
 }); 
+var parameters = { 	"WR1_1_Q_DataII":	 kind,
+					"WR1_1_Q_PointII": 	 point,
+					"WR1_1_Q_SexII":	 sex };
+parameters[type] = true;
 casper.then(function() {
-	this.fill('form#form1', {
-			"WR1_1_Q_DataII":	 '1',
-			"WR1_1_Q_PointII": 	 'A',
-			"WR1_1_Q_SexII":	 '1',
-			"WR1_1_ctl225_1":	 true,
-			"WR1_1_ctl140_0":	 true
-		}, true);
+	this.fill('form#form1', parameters, true);
 	});
 casper.thenEvaluate(function() {
 	document.querySelector("input[id='WR1_1_btnNext']").click();
@@ -22,7 +26,7 @@ casper.thenEvaluate(function() {
 casper.then(function() {
 	this.fill('form#form1', {
 			"WR1_1_Q_YearBeginII":	 '1979',
-			"WR1_1_Q_YearEndII": 	 '2009',
+			"WR1_1_Q_YearEndII": 	 '2010',
 			'WR1_1$btnNext':		 '下一步&gt;'
 		}, true);
 	});
@@ -32,11 +36,10 @@ casper.thenEvaluate(function() {
 casper.thenEvaluate(function() {
 	document.querySelector("input[id='WR1_1_btnNext']").click();
 });
+var area = {'WR1_1$Q_AreaGrp':   'Q_AreaTown'};
+area[dist] = true;
 casper.then(function() {
-	this.fill('form#form1', {
-			'WR1_1$Q_AreaGrp':	 'Q_AreaTown',
-			"WR1_1_ctl115_5":	 true
-		}, true);
+	this.fill('form#form1', area, true);
 	});
 casper.thenEvaluate(function() {
 	document.querySelector("input[id='WR1_1_btnNext']").click();
@@ -51,20 +54,16 @@ casper.then(function() {
 casper.page.onResourceReceived = function(response) {
     if (/^application\/pdf/.test(response.contentType) && response.bodySize) {
         var fs = require('fs'); i++;
-        fs.write("out."+i+".pdf", response.body, 'wb');
+        fs.write(type+"-"+dist+"-"+kind+"."+point+sex+".pdf", response.body, 'wb');
     }
     if (/^application\/vnd.ms-excel/.test(response.contentType) && response.bodySize) {
         var fs = require('fs'); i++;
-        fs.write("out."+i+".xls", response.body, 'wb');
+        fs.write(type+"-"+dist+"-"+kind+"."+point+sex+".xls", response.body, 'wb');
     }
-    console.log("I got a response body with size: " + response.bodySize);
-    console.log("I got a response body with buffer: " + response.contentType);
 };
-casper.then(function() { console.log("I am here") });
 casper.thenEvaluate(function() {
 	document.querySelector("input[id='WR1_1_cmdQuery']").click();
 });
-casper.then(function() { console.log("I am 2here") });
 casper.thenEvaluate(function() {
 	var report = document.getElementById('WR1_1_ReportViewer1_ctl01_ctl05_ctl00');
 	var report_options = report.getElementsByTagName('option');
